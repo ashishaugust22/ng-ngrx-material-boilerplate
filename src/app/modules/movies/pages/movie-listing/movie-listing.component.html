@@ -1,0 +1,10 @@
+<div id="movie-list-component">
+  <a
+    [routerLink]="['/movies/movie-details/']"
+    [queryParams]="{ url: movie.url }"
+    title="Click to view movie details"
+    *ngFor="let movie of movies"
+  >
+    <app-movie-list-item [movie]="movie"></app-movie-list-item>
+  </a>
+</div>

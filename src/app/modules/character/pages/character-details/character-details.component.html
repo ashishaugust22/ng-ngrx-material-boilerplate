@@ -1,0 +1,19 @@
+<div id="character-details-component">
+  <h1>{{ characterDetails.name }}</h1>
+  <p>{{ characterDetails.birth_year }}</p>
+  <hr />
+  <p>Eye Color: {{ characterDetails.eye_color }}</p>
+  <div>
+    <h2>Movies</h2>
+    <a
+      [routerLink]="['/movies/movie-details/']"
+      [queryParams]="{ url: movie }"
+      title="Click to view character details"
+      *ngFor="let movie of characterDetails.films"
+    >
+      <p>
+        {{ movie }}
+      </p>
+    </a>
+  </div>
+</div>
