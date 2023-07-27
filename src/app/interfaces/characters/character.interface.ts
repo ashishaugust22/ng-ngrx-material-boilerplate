@@ -1,4 +1,5 @@
 export interface Character {
+  id: number;
   birth_year: string;
   eye_color: string;
   films: string[]; // https://swapi.dev/api/films/1/
@@ -15,4 +16,10 @@ export interface Character {
   starships: string[]; // https://swapi.dev/api/starships/12/
   url: string; // https://swapi.dev/api/people/1/
   vehicles: string[]; // https://swapi.dev/api/vehicles/14/
+}
+
+export interface CharacterState {
+  entities: { [id: string]: Character };
+  error: boolean;
+  loading: boolean;
 }

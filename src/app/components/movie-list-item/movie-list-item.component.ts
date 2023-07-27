@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MoviesListItem } from '../../interfaces/movies/movies.interface';
+import { Movie } from '../../interfaces/movies/movies.interface';
 
 @Component({
   selector: 'app-movie-list-item',
@@ -7,5 +7,5 @@ import { MoviesListItem } from '../../interfaces/movies/movies.interface';
   styleUrls: ['./movie-list-item.component.scss'],
 })
 export class MovieListItemComponent {
-  @Input() movie: Partial<MoviesListItem> = {};
+  @Input() movie: Partial<Movie> = {};
 }

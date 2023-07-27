@@ -1,21 +1,22 @@
 <div id="movie-details-component">
   <h1>{{ movieDetails.title }}</h1>
   <p class="opening-crawl">{{ movieDetails.opening_crawl }}</p>
-  <hr />
   <p>Producer: {{ movieDetails.producer }}</p>
   <p>Director: {{ movieDetails.director }}</p>
   <p>Released on: {{ movieDetails.release_date }}</p>
+  <hr />
   <div>
     <h2>Characters</h2>
     <a
-      [routerLink]="['/characters/character-details/']"
-      [queryParams]="{ url: character }"
+      [routerLink]="[getCharacterRouter(character)]"
       title="Click to view character details"
       *ngFor="let character of movieDetails.characters"
     >
-      <p>
-        {{ character }}
-      </p>
+      <app-character-list-item
+        [character]="characters[character | getIdFromUrl]"
+      ></app-character-list-item>
     </a>
   </div>
 </div>
+
+<app-loader *ngIf="isLoading"></app-loader>

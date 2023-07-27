@@ -6,8 +6,7 @@
   <div>
     <h2>Movies</h2>
     <a
-      [routerLink]="['/movies/movie-details/']"
-      [queryParams]="{ url: movie }"
+      [routerLink]="[getCharacterRouter(movie)]"
       title="Click to view character details"
       *ngFor="let movie of characterDetails.films"
     >
@@ -17,3 +16,5 @@
     </a>
   </div>
 </div>
+
+<app-loader *ngIf="isLoading"></app-loader>

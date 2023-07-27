@@ -1,10 +1,12 @@
 <div id="movie-list-component">
+  <h1>Movies</h1>
   <a
-    [routerLink]="['/movies/movie-details/']"
-    [queryParams]="{ url: movie.url }"
+    [routerLink]="['/movies/' + movie.url | getIdFromUrl]"
     title="Click to view movie details"
     *ngFor="let movie of movies"
   >
     <app-movie-list-item [movie]="movie"></app-movie-list-item>
   </a>
 </div>
+
+<app-loader *ngIf="isLoading || isLoadingMovies"></app-loader>

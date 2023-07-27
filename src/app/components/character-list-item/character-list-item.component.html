@@ -1,1 +1,9 @@
-<p>character-list-item works!</p>
+<div id="character-list-item-component" *ngIf="character">
+  <mat-card>
+    <mat-card-content>
+      <h2>{{ character.name }}</h2>
+      <div>Birth Year: {{ character.birth_year }}</div>
+      <div>Eye Color: {{ character.eye_color }}</div>
+    </mat-card-content>
+  </mat-card>
+</div>

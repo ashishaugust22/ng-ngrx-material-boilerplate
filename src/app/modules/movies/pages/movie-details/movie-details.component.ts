@@ -1,6 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MovieDetails } from '../../../../interfaces';
+import { Character, Movie, MovieState } from '../../../../interfaces';
+import { Store } from '@ngrx/store';
+import {
+  getCharacterById,
+  getMovieById,
+  getMovieLoading,
+} from '../../../../../store';
+import {
+  loadCharacterAction,
+  loadMovieAction,
+} from '../../../../../store/actions';
 
 @Component({
   selector: 'app-movie-details',
@@ -8,38 +18,65 @@ import { MovieDetails } from '../../../../interfaces';
   styleUrls: ['./movie-details.component.scss'],
 })
 export class MovieDetailsComponent implements OnInit {
-  movieUrl: string = '';
-  movieDetails: Partial<MovieDetails> = {};
-  constructor(private routerSnapshot: ActivatedRoute) {}
+  movieId: string = '';
+  movieDetails: Partial<Movie> = {};
+  isLoading: boolean = false;
+  characters: { [id: string]: Character } = {};
+
+  constructor(
+    private routerSnapshot: ActivatedRoute,
+    private store: Store<MovieState>
+  ) {}
 
   ngOnInit(): void {
     this.getMovieUrl();
+    this.getLoadingStateFromStore();
   }
 
   getMovieUrl(): void {
-    if (this.routerSnapshot.snapshot.queryParams.hasOwnProperty('url')) {
-      this.movieUrl = this.routerSnapshot.snapshot.queryParams['url'];
-      this.getMovieDetails();
+    if (this.routerSnapshot.snapshot.params.hasOwnProperty('id')) {
+      this.movieId = this.routerSnapshot.snapshot.params['id'];
+      this.getMovieFromStore();
     }
   }
 
-  getMovieDetails(): void {
-    this.movieDetails = {
-      characters: ['https://swapi.dev/api/people/1/'],
-      created: '2014-12-10T14:23:31.880000Z',
-      director: 'George Lucas',
-      edited: '2014-12-12T11:24:39.858000Z',
-      episode_id: 4,
-      opening_crawl:
-        "It is a period of civil war.\n\nRebel spaceships, striking\n\nfrom a hidden base, have won\n\ntheir first victory against\n\nthe evil Galactic Empire.\n\n\n\nDuring the battle, Rebel\n\nspies managed to steal secret\r\nplans to the Empire's\n\nultimate weapon, the DEATH\n\nSTAR, an armored space\n\nstation with enough power\n\nto destroy an entire planet.\n\n\n\nPursued by the Empire's\n\nsinister agents, Princess\n\nLeia races home aboard her\n\nstarship, custodian of the\n\nstolen plans that can save her\n\npeople and restore\n\nfreedom to the galaxy....",
-      planets: ['https://swapi.dev/api/planets/1/'],
-      producer: 'Gary Kurtz, Rick McCallum',
-      release_date: '1977-05-25',
-      species: ['https://swapi.dev/api/species/1/'],
-      starships: ['https://swapi.dev/api/starships/2/'],
-      title: 'A New Hope',
-      url: 'https://swapi.dev/api/films/1/',
-      vehicles: ['https://swapi.dev/api/vehicles/4/'],
-    };
+  getMovieFromStore() {
+    this.store.select(getMovieById(this.movieId)).subscribe((movie) => {
+      if (!movie) {
+        this.getMovie();
+      } else {
+        this.movieDetails = movie;
+        movie.characters.forEach((character) => {
+          this.getCharacterDetail$(character);
+        });
+      }
+    });
+  }
+
+  getMovie() {
+    this.store.dispatch(loadMovieAction({ movieId: this.movieId }));
+  }
+
+  getCharacterRouter(url: string): string {
+    const urlSplit = url.split('/');
+    return `/characters/${urlSplit[urlSplit.length - 2]}`;
+  }
+
+  getLoadingStateFromStore() {
+    this.store.select(getMovieLoading).subscribe((loading) => {
+      this.isLoading = loading;
+    });
+  }
+
+  getCharacterDetail$(url: string) {
+    const urlSplit = url.split('/');
+    const id = urlSplit[urlSplit.length - 2];
+    this.store.select(getCharacterById(id)).subscribe((character) => {
+      if (character) {
+        this.characters[id] = character;
+      } else {
+        this.store.dispatch(loadCharacterAction({ characterId: id }));
+      }
+    });
   }
 }
